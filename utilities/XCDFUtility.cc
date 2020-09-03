@@ -8,6 +8,7 @@
 
 #include <set>
 #include <sstream>
+#include <fstream>
 
 void Info(std::vector<std::string>& infiles) {
 
@@ -771,7 +772,20 @@ void AddComment(std::vector<std::string>& infiles,
   }
 
   CopyComments(outFile, f);
-  outFile.AddComment(comment);
+  
+  // Check if comment is a file
+  // if not, just write the one comment
+  // otherwise, write all lines the comments
+  std::ifstream commentFile(comment.c_str());
+  if (!commentFile.good()) {
+    outFile.AddComment(comment);
+  } else {
+    std::string commentLine;
+    while(std::getline(commentFile, commentLine))
+      {
+	outFile.AddComment(commentLine);
+      }
+  }
   CopyAliases(outFile, f);
   outFile.Close();
 }
