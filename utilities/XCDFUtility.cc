@@ -1228,8 +1228,10 @@ void PrintUsage() {
 
     "    comments {infiles} Display all comments from an XCDF file\n\n" <<
 
-    "    add-comment \"comment\" {-o outfile} {infiles} Add comment to an XCDF file\n\n" <<
-
+    "    add-comment \"comment\" {-o outfile} {infiles} Add comment to an XCDF file.\n\n" <<
+    "                    If filename is given instead of \"comment\", multiple comments\n" <<
+    "                    may be added at a time. \n\n" <<
+ 
     "    remove-comments {-o outfile} {infiles} Remove all comments from an XCDF file\n\n" <<
 
     "    compare file1 file2 Compare the contents of file1 and file2\n\n";
