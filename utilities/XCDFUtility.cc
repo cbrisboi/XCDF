@@ -777,7 +777,7 @@ void AddComment(std::vector<std::string>& infiles,
   // if not, just write the one comment
   // otherwise, write all lines the comments
   std::ifstream commentFile(comment.c_str());
-  if (!commentFile.good()) {
+  if (!commentFile.is_open()) {
     outFile.AddComment(comment);
   } else {
     std::string commentLine;
@@ -786,6 +786,7 @@ void AddComment(std::vector<std::string>& infiles,
 	outFile.AddComment(commentLine);
       }
   }
+  commentFile.close();
   CopyAliases(outFile, f);
   outFile.Close();
 }
