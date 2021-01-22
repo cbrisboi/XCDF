@@ -54,7 +54,7 @@ class XCDFFieldDataVector : public XCDFFieldData<T> {
                                        parent_(parent) { }
 
     typedef typename XCDFFieldData<T>::ConstIterator ConstIterator;
-
+  typedef typename std::deque<T>::iterator dequiter;
     virtual ~XCDFFieldDataVector() { }
 
     virtual void Clear() {data_.Clear();}
@@ -69,14 +69,14 @@ class XCDFFieldDataVector : public XCDFFieldData<T> {
       }
     }
     virtual void Dump(XCDFBlockData& data) {
-      for (ConstIterator it = Begin(); it != End(); ++it) {
+      for (dequiter it = data_.Begin(); it != data_.End(); ++it) {
         XCDFFieldData<T>::DumpValue(data, *it);
       }
       data_.Clear();
     }
 
     virtual void Stash() {
-      for (ConstIterator it = Begin(); it != End(); ++it) {
+      for (dequiter it = data_.Begin(); it != data_.End(); ++it) {
         XCDFFieldData<T>::stash_.push_back(*it);
       }
       data_.Clear();
@@ -97,8 +97,8 @@ class XCDFFieldDataVector : public XCDFFieldData<T> {
 
     // Would like to use std::vector as data storage container, but
     // we need T* as our iterator.  Use a custom class.
-    virtual ConstIterator Begin() const {return data_.Begin();}
-    virtual ConstIterator End() const {return data_.End();}
+    virtual ConstIterator Begin()  {return *data_.Begin();}
+    virtual ConstIterator End()  {return *data_.End();}
 
     /// Check if we have a parent
     virtual bool HasParent() const {return true;}
@@ -118,7 +118,9 @@ class XCDFFieldDataVector : public XCDFFieldData<T> {
   class DequeVector
   {
   public:
-    typedef typename std::deque<U>::iterator dequiter;
+    //typedef typename std::deque<U>::iterator dequiter;
+    DequeVector() { }
+
     DequeVector(const DequeVector<U>& v)
     {
       the_vector_ = v;
@@ -146,14 +148,14 @@ class XCDFFieldDataVector : public XCDFFieldData<T> {
       ; // This function does nothing for deques
     }
     
-    unsigned Size()
+    unsigned Size() const
     {
       return the_vector_.size();
     }
 
     //types here are potentially messed up, fix later
-    const dequiter Begin() const {return the_vector_.begin(); }
-    const dequiter End() const {return the_vector_.end(); }
+    const dequiter Begin() {return the_vector_.begin(); }
+    const dequiter End() {return the_vector_.end(); }
     
     void Push(const U& t) { the_vector_.push_back(t); }
 
@@ -239,7 +241,7 @@ class XCDFFieldDataVector : public XCDFFieldData<T> {
     };
 
     // Underlying data
-    SSVector<T> data_;
+    DequeVector<T> data_;
 
     /// Parent field
     const XCDFFieldData<uint64_t>* parent_;
