@@ -113,6 +113,56 @@ class XCDFFieldDataVector : public XCDFFieldData<T> {
 
   protected:
 
+
+  template <typename U>
+  class DequeVector
+  {
+  public:
+    typedef typename std::deque<U>::iterator dequiter;
+    DequeVector(const DequeVector<U>& v)
+    {
+      the_vector_ = v;
+    }
+
+    DequeVector<U>& operator=(DequeVector<U> v)
+    {
+      the_vector_ = v;
+      
+      return *this;
+    }
+
+    const U& operator[](unsigned i) const
+    {
+      return the_vector_[i];
+    }
+
+    void Clear()
+    {
+      the_vector_.clear();
+    }
+
+    void Shrink()
+    {
+      ; // This function does nothing for deques
+    }
+    
+    unsigned Size()
+    {
+      return the_vector_.size();
+    }
+
+    //types here are potentially messed up, fix later
+    const dequiter Begin() const {return the_vector_.begin(); }
+    const dequiter End() const {return the_vector_.end(); }
+    
+    void Push(const U& t) { the_vector_.push_back(t); }
+
+    
+  protected:
+    std::deque<U> the_vector_;
+
+    
+  };
     /*
      *  Stupidly-simple auto-growing array implementation using
      *  T* as an iterator.
@@ -125,7 +175,7 @@ class XCDFFieldDataVector : public XCDFFieldData<T> {
         SSVector() : begin_(NULL), next_(NULL), last_(NULL) {
           Reallocate(10);
         }
-        ~SSVector() {Reallocate(0);}
+       ~SSVector() {Reallocate(0);}
         SSVector(const SSVector<U>& v) : begin_(NULL),
                                          next_(NULL),
                                          last_(NULL) {
